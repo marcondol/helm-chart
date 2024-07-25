@@ -1,0 +1,15 @@
+STATUS: present
+OPENSHIFT: false
+NAMESPACE: llm-namespace
+SERVICE:
+  NAME: llama-3
+  IMAGE:
+    NAME: harbor-be.udata.id/aidag/ollama:v1.0.0
+  RESOURCES:
+    LIMITS:
+      CPU: 5
+      MEMORY: 8Gi
+  SELECTOR:
+    NODE: ""
+  STORAGE:
+    CAPACITY: 5Gi
