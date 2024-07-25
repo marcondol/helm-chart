@@ -1,0 +1,8 @@
+**/gema-app/
+**/jupyter-hub/
+**/limit range/
+**/llama
+**/llama-api/
+**/object-detection/
+**/text-embedding/
+get_*.sh
