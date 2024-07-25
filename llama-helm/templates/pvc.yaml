@@ -4,9 +4,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.SERVICE.NAME }}
+  name: {{ .Values.SERVICE.NAME }}-data
   namespace: {{ .Values.NAMESPACE }}
 spec:
+  storageClassName: csi-s3
   accessModes:
   - ReadWriteMany
   resources:

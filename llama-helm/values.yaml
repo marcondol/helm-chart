@@ -4,12 +4,20 @@ NAMESPACE: llm-namespace
 SERVICE:
   NAME: llama-3
   IMAGE:
-    NAME: harbor-be.udata.id/aidag/ollama:v1.0.0
+    NAME: harbor-be.udata.id/aidag/olama:v1.0.0
+  ENV:
+    TEST: 123
   RESOURCES:
     LIMITS:
       CPU: 5
       MEMORY: 8Gi
+      GPU:
+        nvidia.com/mig-2g.10gb: 1
   SELECTOR:
-    NODE: ""
+    NODE:
+      nvidia.com/gpu.present: "true"
   STORAGE:
     CAPACITY: 5Gi
+
+imagePullSecrets:
+- name: registry-credential
