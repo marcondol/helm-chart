@@ -5,8 +5,6 @@ SERVICE:
   NAME: llama-3
   IMAGE:
     NAME: harbor-be.udata.id/aidag/olama:v1.0.0
-  ENV:
-    TEST: 123
   RESOURCES:
     LIMITS:
       CPU: 5

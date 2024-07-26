@@ -140,8 +140,4 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.SERVICE.NAME }}
       {{- end }}
-    {{- if eq .Values.OPENSHIFT true }}
-    triggers:
-    - type: ConfigChange
-    {{- end }}
   {{- end }}

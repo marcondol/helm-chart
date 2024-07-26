@@ -29,6 +29,8 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Values.SERVICE.NAME }}
+        image: {{ .Values.SERVICE.IMAGE.NAME }}
+        imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -37,10 +39,8 @@ spec:
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
-        image: {{ .Values.SERVICE.IMAGE.NAME }}
-        imagePullPolicy: "Always"
         ports:
-        - containerPort: 11434
+        - containerPort: {{ .Values.SERVICE.PORT }}
           protocol: TCP
         {{- if .Values.SERVICE.ENV }}
         envFrom:
@@ -56,6 +56,11 @@ spec:
             {{- end }}
             {{- if .Values.SERVICE.RESOURCES.REQUESTS.MEMORY }}
             memory: {{ .Values.SERVICE.RESOURCES.REQUESTS.MEMORY }}
+            {{- end }}
+            {{- if .Values.SERVICE.RESOURCES.LIMITS.GPU }}
+              {{- range $key, $value := .Values.SERVICE.RESOURCES.LIMITS.GPU }}
+            {{ $key }}: {{ $value }}
+              {{- end}}
             {{- end }}
           {{- else }}
             {{- if .Values.SERVICE.RESOURCES.LIMITS.CPU }}
@@ -89,13 +94,13 @@ spec:
           initialDelaySeconds: 10
           httpGet:
             path: /
-            port: 11434
+            port: {{ .Values.SERVICE.PORT }}
           timeoutSeconds: 1
         readinessProbe:
           initialDelaySeconds: 5
           httpGet:
             path: /
-            port: 11434
+            port: {{ .Values.SERVICE.PORT }}
           timeoutSeconds: 1
         {{- if .Values.SERVICE.STORAGE }}
         volumeMounts:
@@ -114,28 +119,17 @@ spec:
               # Pause for Ollama to start.
               sleep 5
 
-              echo "🔴 Retrieve LLAMA3 model..."
-              ollama pull llama3
-              echo "🟢 Retrieve LLAMA3 model Done!"
-
-              echo "🔴 Keep alive llama3"
-              ollama run --keepalive -1s llama3 ""
-              ollama run --keepalive -1s llama3 ""
-              ollama run --keepalive -1s llama3 ""
-              echo "🟢 Keep alive llama3 Done!"
+              echo "🔴 Retrieve mxbai-embed-large model..."
+              ollama pull mxbai-embed-large
+              echo "🟢 Retrieve mxbai-embed-large model Done!"
 
               # Wait for Ollama process to finish.
               wait $pid
       dnsPolicy: ClusterFirst
-      {{- if .Values.SERVICE.RESOURCES.LIMITS.GPU }}
-      runtimeClassName: "nvidia"
-      {{- end }}
       {{- if .Values.SERVICE.SELECTOR }}
       nodeSelector:
         {{- if .Values.SERVICE.SELECTOR.NODE }}
-          {{- range $key, $value := .Values.SERVICE.SELECTOR.NODE }}
-        {{ $key }}: "{{ $value }}"
-          {{- end}}
+        node-role.kubernetes.io/worker: "{{ .Values.SERVICE.SELECTOR.NODE }}"
         {{- end }}
       {{- end }}
       restartPolicy: Always
@@ -144,6 +138,6 @@ spec:
       volumes:
         - name: {{ .Values.SERVICE.NAME }}-data
           persistentVolumeClaim:
-            claimName: {{ .Values.SERVICE.NAME }}-data
+            claimName: {{ .Values.SERVICE.NAME }}
       {{- end }}
   {{- end }}

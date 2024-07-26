@@ -2,16 +2,15 @@ STATUS: present
 OPENSHIFT: false
 NAMESPACE: llm-namespace
 SERVICE:
-  NAME: mxbai
+  NAME: mxbai-embeddings
   IMAGE:
     NAME: harbor-be.udata.id/aidag/olama:v1.0.0
+  PORT: 11434
   RESOURCES:
     LIMITS:
-      CPU: 5
-      MEMORY: 8Gi
-      GPU:
-        nvidia.com/mig-2g.10gb: 1
+      CPU: 1
+      MEMORY: 1Gi
   SELECTOR:
     NODE: ""
   STORAGE:
-    CAPACITY: 10Gi
+    CAPACITY: 2Gi
